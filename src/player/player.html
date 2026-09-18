@@ -15,7 +15,7 @@
           </div>
           <div class="brand-text">
             <h1>Reader Sync</h1>
-            <p>by Fish · 两步完成同步播放</p>
+            <p>by Fish · 自动匹配与跟随播放</p>
           </div>
         </div>
         <div class="top-actions">
@@ -29,140 +29,57 @@
       </header>
 
       <section class="stage" aria-live="polite">
-        <nav class="progress-nav" aria-label="导入步骤">
-          <div class="step is-active" data-step="subtitle">
-            <span class="step-num">1</span>
-            <div class="step-info">
-              <span class="step-title">字幕来源</span>
-              <span class="step-sub">自动匹配或手动拖入</span>
-            </div>
-          </div>
-          <div class="step" data-step="video">
-            <span class="step-num">2</span>
-            <div class="step-info">
-              <span class="step-title">视频文件</span>
-              <span class="step-sub">拖入 MP4 / MKV</span>
-            </div>
-          </div>
-          <div class="step" data-step="player">
-            <span class="step-num">3</span>
-            <div class="step-info">
-              <span class="step-title">播放</span>
-              <span class="step-sub">进入极简播放器</span>
-            </div>
-          </div>
-        </nav>
-
-        <section id="subtitle-view" class="view is-active">
-          <div class="screen-head">
-            <div class="screen-head-left">
-              <h2>选择字幕来源</h2>
-              <p>只保留一个 aim-read 阅读页，插件会自动绑定，并用真实页面标题和全文识别当前剧集。</p>
-            </div>
-            <div class="context-chip">
-              <div class="label">当前识别</div>
-              <div class="value" id="reader-context-value">等待 reader 页面</div>
-            </div>
-          </div>
-
-          <div class="choice-grid">
-            <button class="choice is-selected" type="button" data-subtitle-choice="local">
-              <span class="choice-icon-wrap">✓</span>
-              <h3>本地自动匹配</h3>
-              <p>内置 Friends S01-S10 字幕包，根据 reader 页面自动找到对应字幕，零配置开始。</p>
-              <small id="local-subtitle-state">等待识别 reader 页面</small>
-            </button>
-
-            <button class="choice is-disabled" type="button" data-subtitle-choice="online" aria-disabled="true">
-              <span class="choice-icon-wrap">↗</span>
-              <h3>在线匹配</h3>
-              <p>后续从 GitHub 字幕仓库动态更新，不跟随插件版本发布，涵盖更多剧集。</p>
-              <small>敬请期待</small>
-            </button>
-
-            <label class="choice dropbox" id="subtitle-drop">
-              <input id="subtitle-file" type="file" accept=".ass,.ssa,.srt,.vtt" />
-              <span class="choice-icon-wrap">+</span>
-              <h3>拖入字幕文件</h3>
-              <p>适合其他剧集或自备字幕，支持 ASS、SSA、SRT、VTT 格式，拖入即用。</p>
-              <small id="subtitle-file-state">未选择文件</small>
-            </label>
-          </div>
-
-          <div class="result-strip">
-            <div class="result-info">
-              <strong id="subtitle-result-title">等待字幕来源</strong>
-              <span id="subtitle-result-detail">正在检测唯一 reader 页面并准备本地字幕索引。</span>
-            </div>
-            <button id="to-video" class="btn btn-primary" type="button" disabled>下一步 →</button>
-          </div>
-        </section>
-
-        <section id="video-view" class="view">
-          <div class="screen-head">
-            <div class="screen-head-left">
-              <h2>导入视频文件</h2>
-              <p>接受 MP4 或 MKV。推荐基线可直接播放，其他组合建议一键预处理后再播放。</p>
-            </div>
-            <div class="context-chip">
-              <div class="label">字幕已就绪</div>
-              <div class="value" id="video-subtitle-chip">等待字幕</div>
-            </div>
-          </div>
-
-          <div class="video-grid">
-            <label class="video-drop" id="video-drop">
-              <input id="video-file" type="file" accept=".mp4,.mkv,video/mp4,video/x-matroska" />
-              <div class="file-orb">▶</div>
-              <h3 id="video-drop-title">把视频文件拖到这里</h3>
-              <p id="video-drop-desc">导入后会用内置 FFmpeg 读取真实容器、视频流和音频流。</p>
-            </label>
-
-            <aside class="compat-card">
-              <div class="metric">
-                <span class="m-label">文件</span>
-                <strong class="m-value" id="video-name">未导入</strong>
+        <section id="player-view" class="view is-active single-player-view">
+          <div class="automation-grid" aria-label="自动准备状态">
+            <article class="automation-card" data-automation-state="reader">
+              <span class="automation-index">1</span>
+              <div>
+                <strong>Reader 页面</strong>
+                <p id="reader-context-value">正在自动捕捉 Reader 页面…</p>
               </div>
-              <div class="metric">
-                <span class="m-label">容器</span>
-                <strong class="m-value" id="video-container">等待检测</strong>
+            </article>
+            <article class="automation-card" data-automation-state="subtitle">
+              <span class="automation-index">2</span>
+              <div>
+                <strong id="subtitle-result-title">正在匹配字幕</strong>
+                <p id="subtitle-result-detail">识别剧集后会自动生成同步映射。</p>
               </div>
-              <div class="metric">
-                <span class="m-label">视频</span>
-                <strong class="m-value" id="video-codec">等待检测</strong>
+            </article>
+            <article class="automation-card" data-automation-state="video">
+              <span class="automation-index">3</span>
+              <div>
+                <strong>本地视频</strong>
+                <p id="automation-video-status">等待 Reader 剧集与媒体目录。</p>
               </div>
-              <div class="metric">
-                <span class="m-label">音频</span>
-                <strong class="m-value" id="audio-codec">等待检测</strong>
-              </div>
-              <div class="metric">
-                <span class="m-label">建议</span>
-                <strong class="m-value" id="video-plan">导入后判断</strong>
-              </div>
-              <div class="processing" id="processing-box">
-                <progress id="processing-progress" value="0" max="100"></progress>
-                <span class="processing-text" id="processing-text">正在准备</span>
-              </div>
-            </aside>
+            </article>
           </div>
 
-          <div class="actions">
-            <button class="btn" type="button" id="back-subtitle">← 上一步</button>
-            <button class="btn btn-danger" type="button" id="risk-play" disabled>忽略风险直接播放</button>
-            <button class="btn btn-primary" type="button" id="process-play" disabled>一键处理并播放</button>
-          </div>
-        </section>
-
-        <section id="player-view" class="view">
           <div class="player-wrap" id="player-wrap">
             <div class="player-card">
               <div class="player-head">
                 <div>
                   <h2>视频播放器</h2>
-                  <p id="player-note">等待视频载入。</p>
+                  <p id="player-note">正在后台识别 Reader、匹配字幕和本地视频。</p>
                 </div>
-                <button id="change-episode" class="btn" type="button">切换下一集</button>
+                <button id="change-episode" class="btn" type="button">重新识别 Reader</button>
               </div>
+
+              <section class="training-route-card" id="training-route-card" aria-labelledby="training-route-title">
+                <div class="training-route-head">
+                  <div>
+                    <span class="eyebrow">训练路线</span>
+                    <strong id="training-route-title">尚未启用训练计划</strong>
+                    <p id="training-route-status">选择训练方案后，插件会记录遍数并自动切换视频版本。</p>
+                  </div>
+                  <span class="training-target" id="training-target">未启用</span>
+                </div>
+                <div class="training-filmstrip" id="training-filmstrip" aria-label="当前剧集训练进度"></div>
+                <div class="training-quick-actions">
+                  <button class="btn" id="training-restart-pass" type="button" disabled>重新开始本遍</button>
+                  <button class="btn" id="training-undo" type="button" disabled>撤销上次完成</button>
+                  <button class="btn btn-primary" id="training-complete-pass" type="button" disabled>完成本遍</button>
+                </div>
+              </section>
 
               <div class="video-area">
                 <video id="video" controls playsinline preload="metadata"></video>
@@ -194,7 +111,7 @@
                 </div>
               </div>
 
-              <p id="player-status" class="player-status">等待视频载入。</p>
+              <p id="player-status" class="player-status">自动准备中，可先配置下方资源设置。</p>
 
               <div class="play-summary">
                 <span class="pill" id="player-video-pill">视频：未载入</span>
@@ -203,6 +120,172 @@
               </div>
             </div>
           </div>
+
+          <details class="resource-drawer training-drawer" id="training-settings">
+            <summary>
+              <span>
+                <strong>训练计划</strong>
+                <small id="training-summary">本机记录学习遍数与整季进度</small>
+              </span>
+              <span class="drawer-chevron" aria-hidden="true">⌄</span>
+            </summary>
+            <section class="training-settings-panel" aria-labelledby="training-settings-title">
+              <div class="training-settings-copy">
+                <div class="eyebrow">学习节奏</div>
+                <h3 id="training-settings-title">把重复训练变成自动路线</h3>
+                <p>训练开启后，当前遍次会决定视频版本；暂停训练即可恢复手动版本选择。</p>
+              </div>
+              <div class="training-settings-grid">
+                <label class="library-check training-enable-row">
+                  <input id="training-enabled" type="checkbox" />
+                  <span>启用训练计划并自动记录</span>
+                </label>
+                <label class="library-select-label">
+                  <span>新剧集默认方案</span>
+                  <select id="training-default-plan">
+                    <option value="standard">标准六遍 · 双语2 / 全英2 / 无字2</option>
+                    <option value="advanced">进阶四遍 · 全英2 / 无字2</option>
+                    <option value="custom">我的自定义方案</option>
+                  </select>
+                </label>
+                <div class="training-counts" id="training-custom-counts">
+                  <label><span>双语</span><input id="training-custom-bilingual" type="number" min="0" max="6" step="1" value="2" /></label>
+                  <label><span>全英</span><input id="training-custom-english" type="number" min="0" max="6" step="1" value="2" /></label>
+                  <label><span>无字幕</span><input id="training-custom-clean" type="number" min="0" max="6" step="1" value="2" /></label>
+                </div>
+                <label class="library-select-label">
+                  <span>当前剧集方案</span>
+                  <select id="training-episode-plan" disabled>
+                    <option value="default">跟随默认方案</option>
+                    <option value="standard">标准六遍</option>
+                    <option value="advanced">进阶四遍</option>
+                    <option value="custom">我的自定义方案</option>
+                  </select>
+                </label>
+                <div class="training-settings-actions">
+                  <button class="btn" id="training-pause-toggle" type="button" disabled>暂停训练</button>
+                  <button class="btn btn-danger" id="training-reset-episode" type="button" disabled>重置当前集记录</button>
+                </div>
+              </div>
+              <div class="season-progress-head">
+                <strong>整季进度</strong>
+                <span id="season-progress-summary">等待媒体目录或训练记录</span>
+              </div>
+              <div class="season-progress-list" id="season-progress-list"></div>
+            </section>
+          </details>
+
+          <details class="resource-drawer" id="resource-settings">
+            <summary>
+              <span>
+                <strong>资源设置</strong>
+                <small>媒体目录、版本选择与后台预处理</small>
+              </span>
+              <span class="drawer-chevron" aria-hidden="true">⌄</span>
+            </summary>
+            <section class="media-library-card" aria-labelledby="media-library-title">
+              <div class="media-library-copy">
+                <div class="eyebrow">本地媒体库</div>
+                <h3 id="media-library-title">配置一次文件夹，之后自动匹配并跟随换集</h3>
+                <p id="media-library-status">尚未配置媒体文件夹。目录只在本机读取，插件不会上传视频。</p>
+                <div class="media-library-match" id="media-library-match">当前剧集：等待 Reader 页面识别</div>
+                <progress id="library-progress" value="0" max="100"></progress>
+              </div>
+              <div class="media-library-actions">
+                <label class="library-select-label">
+                  <span>视频版本</span>
+                  <select id="library-variant">
+                    <option value="english">纯英版</option>
+                    <option value="bilingual">双语版</option>
+                    <option value="clean">无字幕版</option>
+                    <option value="auto">自动选择</option>
+                  </select>
+                </label>
+                <label class="library-check">
+                  <input id="library-preprocess" type="checkbox" checked />
+                  <span>优先处理当前集，再后台预处理其余剧集</span>
+                </label>
+                <button id="choose-library-folder" class="btn btn-primary" type="button">选择媒体文件夹</button>
+                <button id="rescan-library" class="btn" type="button" disabled>重新扫描</button>
+                <button id="cancel-library-scan" class="btn btn-danger" type="button" disabled>停止预处理</button>
+              </div>
+            </section>
+          </details>
+
+          <details class="resource-drawer fallback-drawer" id="manual-fallback">
+            <summary>
+              <span>
+                <strong>手动导入与故障处理</strong>
+                <small>自动匹配失败时再使用，不影响原有功能</small>
+              </span>
+              <span class="drawer-chevron" aria-hidden="true">⌄</span>
+            </summary>
+
+            <section id="subtitle-view" class="workflow-panel">
+              <div class="workflow-panel-head">
+                <div>
+                  <h3>字幕来源</h3>
+                  <p>默认使用内置字幕自动匹配，也可拖入 ASS、SSA、SRT 或 VTT。</p>
+                </div>
+                <span id="video-subtitle-chip" class="pill">等待字幕</span>
+              </div>
+              <div class="choice-grid compact-choice-grid">
+                <button class="choice is-selected" type="button" data-subtitle-choice="local">
+                  <span class="choice-icon-wrap">✓</span>
+                  <h3>本地自动匹配</h3>
+                  <p>根据 Reader 页面自动匹配内置 Friends 字幕。</p>
+                  <small id="local-subtitle-state">等待识别 Reader 页面</small>
+                </button>
+                <button class="choice is-disabled" type="button" data-subtitle-choice="online" aria-disabled="true">
+                  <span class="choice-icon-wrap">↗</span>
+                  <h3>在线匹配</h3>
+                  <p>后续从字幕仓库动态更新。</p>
+                  <small>敬请期待</small>
+                </button>
+                <label class="choice dropbox" id="subtitle-drop">
+                  <input id="subtitle-file" type="file" accept=".ass,.ssa,.srt,.vtt" />
+                  <span class="choice-icon-wrap">+</span>
+                  <h3>拖入字幕文件</h3>
+                  <p>用于其他剧集或自备字幕。</p>
+                  <small id="subtitle-file-state">未选择文件</small>
+                </label>
+              </div>
+              <button id="to-video" class="btn legacy-flow-action" type="button" disabled>视频设置</button>
+            </section>
+
+            <section id="video-view" class="workflow-panel">
+              <div class="workflow-panel-head">
+                <div>
+                  <h3>手动视频与兼容处理</h3>
+                  <p>接受 MP4 或 MKV；自动目录匹配失败时可以手动导入。</p>
+                </div>
+              </div>
+              <div class="video-grid compact-video-grid">
+                <label class="video-drop" id="video-drop">
+                  <input id="video-file" type="file" accept=".mp4,.mkv,video/mp4,video/x-matroska" />
+                  <div class="file-orb">▶</div>
+                  <h3 id="video-drop-title">把视频文件拖到这里</h3>
+                  <p id="video-drop-desc">导入后会读取真实容器、视频流和音频流。</p>
+                </label>
+                <aside class="compat-card">
+                  <div class="metric"><span class="m-label">文件</span><strong class="m-value" id="video-name">未导入</strong></div>
+                  <div class="metric"><span class="m-label">容器</span><strong class="m-value" id="video-container">等待检测</strong></div>
+                  <div class="metric"><span class="m-label">视频</span><strong class="m-value" id="video-codec">等待检测</strong></div>
+                  <div class="metric"><span class="m-label">音频</span><strong class="m-value" id="audio-codec">等待检测</strong></div>
+                  <div class="metric"><span class="m-label">建议</span><strong class="m-value" id="video-plan">导入后判断</strong></div>
+                  <div class="processing" id="processing-box">
+                    <progress id="processing-progress" value="0" max="100"></progress>
+                    <span class="processing-text" id="processing-text">正在准备</span>
+                  </div>
+                </aside>
+              </div>
+              <div class="actions">
+                <button class="btn legacy-flow-action" type="button" id="back-subtitle">字幕设置</button>
+                <button class="btn btn-danger" type="button" id="risk-play" disabled>忽略风险直接播放</button>
+                <button class="btn btn-primary" type="button" id="process-play" disabled>一键处理并播放</button>
+              </div>
+            </section>
+          </details>
         </section>
       </section>
 

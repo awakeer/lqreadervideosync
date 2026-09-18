@@ -1,0 +1,110 @@
+<doc>
+  <title>Reader Sync 社区增强版 2.1.1.11：发布、安装与二开说明</title>
+  <callout emoji="🧭" background-color="light-blue" border-color="blue">
+    <p><b>适合谁：</b>使用 aim-read 学习英文剧集的社区伙伴，以及希望继续维护 Reader Sync 的开发者。</p>
+    <p><b>你能在这里完成：</b>了解项目来源与边界、安装 2.1.1.11、配置本地资源、使用训练计划，并按规范反馈或继续二开。</p>
+  </callout>
+
+  <h1>先说清楚：这是什么版本</h1>
+  <p>Reader Sync 社区增强版是在生🐟发布的第一版基础上继续开发的社区版本。它不是原作者发布的“官方新版”，也不替代原项目。</p>
+  <ul>
+    <li>原项目：<a type="url-preview" href="https://github.com/LCYLYM/lqreadervideosync">LCYLYM/lqreadervideosync</a></li>
+    <li>社区增强版：<a type="url-preview" href="https://github.com/awakeer/lqreadervideosync">awakeer/lqreadervideosync</a></li>
+    <li>当前版本：2.1.1.11，社区测试版</li>
+    <li>适用浏览器：Chrome / Chromium 120+</li>
+    <li>适用网站：aim-read.top</li>
+  </ul>
+  <callout emoji="⚠️" background-color="light-yellow" border-color="orange">
+    <p><b>非商业边界：</b>原项目采用 PolyForm Noncommercial 1.0.0。个人学习、研究、测试等非商业用途可以按许可证使用和修改；收费产品、商业服务或其他商业场景，应先向原作者取得单独授权。</p>
+  </callout>
+
+  <h1>2.1.1.11 解决了什么</h1>
+  <h2>从三个步骤压缩为一个播放界面</h2>
+  <p>过去需要手动点击“识别 Reader—准备视频—进入播放”。现在页面识别、字幕匹配、媒体准备和切集跟随主要在后台完成，日常使用只保留最终播放器。</p>
+
+  <h2>一次配置本地资源目录</h2>
+  <p>选择一次剧集总目录后，插件会识别双语、纯英、无字幕版本，并根据 Reader 当前集数自动切换。兼容性预处理结果保存在媒体目录的 ReaderSync-Processed 文件夹，后续可以复用。</p>
+
+  <h2>进度记忆与训练计划</h2>
+  <ul>
+    <li>按剧集、视频版本和训练遍次分别保存播放位置。</li>
+    <li>标准六遍：双语 2 遍 → 全英 2 遍 → 无字幕 2 遍。</li>
+    <li>进阶四遍：全英 2 遍 → 无字幕 2 遍。</li>
+    <li>也可以自定义三个阶段的遍数。</li>
+    <li>自然播放结束会完成本遍；也支持手动完成、撤销和重新开始。</li>
+  </ul>
+
+  <h2>媒体兼容与声音修复</h2>
+  <p>纯英 MP4、HEVC / AC3 等素材会先经过兼容性判断。浏览器无法直接播放的画面或音轨会在本机转换为 H.264 / AAC 等兼容格式，解决切换双语或无字幕版本后音量键变灰、没有声音的问题。</p>
+
+  <h1>安装方法</h1>
+  <ol>
+    <li>在 GitHub Releases 下载 Reader-Sync-2.1.1.11-community.zip。</li>
+    <li>把 ZIP 完整解压。打开解压后的文件夹，确认第一层就能看到 manifest.json。</li>
+    <li>在 Chrome 地址栏打开 chrome://extensions。</li>
+    <li>打开右上角“开发者模式”。</li>
+    <li>点击“加载已解压的扩展程序”，选择整个解压文件夹。</li>
+    <li>关闭或移除其他 Reader Sync 版本，避免多个扩展同时响应。</li>
+  </ol>
+  <callout emoji="✅" background-color="light-green" border-color="green">
+    <p><b>安装成功的判断：</b>扩展列表出现 Reader Sync Player；打开插件后可以看到播放器，并能识别已打开的 Reader 页面。</p>
+  </callout>
+
+  <h1>第一次使用</h1>
+  <ol>
+    <li>先登录 aim-read，并打开要学习的剧集台本。</li>
+    <li>打开 Reader Sync，选择本地剧集总目录。</li>
+    <li>允许浏览器访问该目录，选择默认版本和是否预处理。</li>
+    <li>等待当前集被匹配。首次遇到不兼容素材时，需要等待本地预处理。</li>
+    <li>播放视频，确认 Reader 台本会跟随；点击另一段台本，确认视频会跳到对应位置。</li>
+    <li>需要训练时，在训练卡片中开启六遍、四遍或自定义方案。</li>
+  </ol>
+  <p>重启电脑或浏览器后，如果目录权限被 Chrome 收回，点击“恢复文件夹权限”或重新扫描即可，训练记录和播放书签不会因此清空。</p>
+
+  <h1>数据与隐私</h1>
+  <ul>
+    <li>视频和字幕在本机浏览器中处理，不上传到 GitHub或飞书。</li>
+    <li>媒体索引、训练次数和播放书签保存在当前浏览器本机。</li>
+    <li>日志用于排查问题。分享前仍应检查并脱敏，不要上传账号、Cookie、访问令牌或私密目录信息。</li>
+    <li>仓库和发布包不包含任何视频或音频文件。</li>
+  </ul>
+
+  <h1>怎样反馈问题</h1>
+  <p>为了让问题能够稳定复现，请一次性提供：</p>
+  <ul>
+    <li>浏览器版本和 Reader Sync 版本；</li>
+    <li>剧集编号与所选版本（双语 / 全英 / 无字幕）；</li>
+    <li>从正常状态到出现问题的完整操作步骤；</li>
+    <li>插件导出的、已经脱敏的日志 ZIP；</li>
+    <li>是否可以通过“暂停预处理—重新扫描”临时恢复。</li>
+  </ul>
+
+  <h1>继续二开时要遵守什么</h1>
+  <ol>
+    <li><b>保留来源。</b>使用 Fork 保留与上游的关系，在 README 中同时写明原作者、原项目链接和你的修改范围。</li>
+    <li><b>保留许可证与 Required Notice。</b>不要删除 LICENSE.md，也不要移除“Copyright 生🐟”这条必需声明。</li>
+    <li><b>不要混淆身份。</b>除非取得授权，不要把衍生版本称为“官方版”或“原作者新版”。</li>
+    <li><b>把代码与内容资源分开看。</b>软件许可证不自动授予影视对白、翻译、字幕、视频和音频的版权。</li>
+    <li><b>保留第三方声明。</b>FFmpeg WebAssembly 核心、JavaScript 包和其他依赖有各自的许可证。</li>
+    <li><b>每次发布都可复现。</b>写清版本、变更、测试、已知边界和安装方法，并提供校验值。</li>
+    <li><b>不要提交隐私数据。</b>测试素材、浏览器登录状态、日志和本地路径在公开前必须检查。</li>
+  </ol>
+
+  <h1>本次发布做了哪些检查</h1>
+  <ul>
+    <li>TypeScript 静态检查通过。</li>
+    <li>10 项自动回归测试通过。</li>
+    <li>真实纯英 MP4 探测通过：MPEG-4 Part 2 + AAC。</li>
+    <li>真实双语 MKV 探测通过：HEVC + AC3。</li>
+    <li>发布 ZIP 解压后再次运行完整回归测试通过。</li>
+  </ul>
+
+  <h1>许可证与参考</h1>
+  <ul>
+    <li><a type="url-preview" href="https://github.com/LCYLYM/lqreadervideosync/blob/main/LICENSE.md">上游许可证：PolyForm Noncommercial 1.0.0</a></li>
+    <li><a type="url-preview" href="https://docs.github.com/en/pull-requests/how-tos/work-with-forks">GitHub：使用 Fork 协作</a></li>
+    <li><a type="url-preview" href="https://docs.github.com/en/repositories/releasing-projects-on-github/about-releases">GitHub：使用 Release 发布可安装版本</a></li>
+    <li><a type="url-preview" href="https://github.com/ffmpegwasm/ffmpeg.wasm">ffmpeg.wasm 项目</a></li>
+  </ul>
+  <p>本文用于帮助社区按清晰、可追溯的方式发布和使用项目，不构成法律意见。涉及商业使用或第三方字幕再分发时，应向对应权利人确认。</p>
+</doc>

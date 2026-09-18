@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="zh-CN">
+  <head>
+    <meta charset="utf-8" />
+    <title>Reader Sync UI Harness</title>
+    <link rel="stylesheet" href="../player/player.css" />
+  </head>
+  <body>
+    <script>
+      const stored = {
+        readerSyncTrainingSettingsV1: {
+          enabled: true,
+          paused: false,
+          defaultPlanId: "advanced",
+          customCounts: { bilingual: 0, english: 2, clean: 2 }
+        },
+        readerSyncTrainingRecordsV1: {
+          S01E01: {
+            completed: { bilingual: 0, english: 1, clean: 0 },
+            history: ["english"],
+            updatedAt: "2026-09-07T00:00:00.000Z"
+          }
+        },
+        readerSyncPlaybackBookmarksV1: {},
+        readerSyncMediaLibraryIndexV1: [
+          { id: "e1-en", episodeToken: "S01E01", variant: "english", relativePath: "纯英/S01E01.eng.mp4" },
+          { id: "e1-clean", episodeToken: "S01E01", variant: "clean", relativePath: "无字/S01E01.mkv" },
+          { id: "e2-en", episodeToken: "S01E02", variant: "english", relativePath: "纯英/S01E02.eng.mp4" },
+          { id: "e2-clean", episodeToken: "S01E02", variant: "clean", relativePath: "无字/S01E02.mkv" }
+        ],
+        readerSyncMediaLibrarySettingsV1: { preprocess: true, preferredVariant: "english" }
+      };
+      const messageListeners = [];
+      const port = {
+        onMessage: { addListener(listener) { messageListeners.push(listener); } },
+        onDisconnect: { addListener() {} },
+        postMessage() {}
+      };
+      window.chrome = {
+        storage: {
+          local: {
+            async get(keys) {
+              const result = {};
+              for (const key of keys) result[key] = stored[key];
+              return result;
+            },
+            async set(value) { Object.assign(stored, value); }
+          }
+        },
+        runtime: {
+          connect() { return port; },
+          sendMessage() {},
+          getURL(path) { return new URL(`../${path}`, location.href).href; }
+        }
+      };
+      window.__sendPlayerMessage = (message) => messageListeners.forEach((listener) => listener(message));
+    </script>
+    <script type="module">
+      const response = await fetch("../player/player.html");
+      const markup = await response.text();
+      const parsed = new DOMParser().parseFromString(markup, "text/html");
+      document.body.replaceChildren(...Array.from(parsed.body.children).filter((node) => node.tagName !== "SCRIPT"));
+      await import("../player/player.js");
+      await new Promise((resolve) => setTimeout(resolve, 80));
+      window.__sendPlayerMessage({
+        type: "CONNECTED_TABS_RESPONSE",
+        payload: { preferredTabId: 1, tabs: [{ tabId: 1, title: "Friends S01E01", url: "https://aim-read.top/daily-feed/1" }] }
+      });
+      window.__sendPlayerMessage({
+        type: "ACTIVE_PAGE_CONTEXT_RESPONSE",
+        payload: {
+          tabId: 1,
+          pageContext: {
+            articleUrl: "https://aim-read.top/daily-feed/1",
+            articleId: 1,
+            categoryId: 59,
+            title: "Friends S01E01 The Pilot",
+            capturedAt: new Date().toISOString(),
+            paragraphs: []
+          }
+        }
+      });
+    </script>
+  </body>
+</html>
